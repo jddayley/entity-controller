@@ -397,6 +397,7 @@ class EntityController(entity.Entity):
     )
 
     def __init__(self, hass, config, machine):
+        self.unavailable_entities = set()  # Track unavailable entities
         self.attributes = {}
         self.may_update = False
         self.model = None
@@ -596,9 +597,19 @@ class Model:
         self.log.debug("sensor_state_change :: %10s Sensor state change to: %s" % ( pprint.pformat(entity), new.state))
         self.log.debug("sensor_state_change :: state: " +  pprint.pformat(self.state))
         if new.state == "unavailable":
-            # Log for debugging purposes
-            self.log.debug("Entity %s became unavailable. Ignoring.", entity)
-            return  # Exit the function early, ignoring the unavailable state
+            self.unavailable_entities.add(entity)
+            self.log.debug("Entity %s became unavailable.", entity)
+            return
+
+        # Entity was unavailable and now is not
+        if entity in self.unavailable_entities and new.state != "unavailable":
+            self.unavailable_entities.remove(entity)
+            self.log.debug("Entity %s recovered from unavailable.", entity)
+            # Decide how to handle this scenario. For example:
+            # - If you want to reset to a default state without treating as manual activation:
+            self.log.debug("Resetting state machine for %s to default state.", entity)
+            #self.transition_to_idle()
+            return
         try:
             if new.state == old.state:
                 self.log.debug("sensor_state_change :: Ignore attribute only change")
