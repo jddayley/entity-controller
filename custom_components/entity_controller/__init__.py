@@ -597,12 +597,15 @@ class Model:
         self.log.debug("sensor_state_change :: %10s Sensor state change to: %s" % ( pprint.pformat(entity), new.state))
         self.log.debug("sensor_state_change :: state: " +  pprint.pformat(self.state))
         if new and new.state == "unavailable":
-            self.log.debug("Entity %s became unavailable.", entity)
             self.unavailable_entities.add(entity)
+            self.log.info("Entity %s became unavailable.", entity)
             return
         elif new and entity in self.unavailable_entities and new.state != "unavailable":
-            self.log.debug("Entity %s recovered from unavailable.", entity)
             self.unavailable_entities.remove(entity)
+            self.log.info("Entity %s recovered from unavailable.", entity)
+            self.set_context(new.context)
+            self.update(last_triggered_by=entity)
+            self._reset_timer()
             return
         try:
             if new.state == old.state:
