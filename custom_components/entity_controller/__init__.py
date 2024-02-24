@@ -596,19 +596,13 @@ class Model:
         """ State change callback for sensor entities """
         self.log.debug("sensor_state_change :: %10s Sensor state change to: %s" % ( pprint.pformat(entity), new.state))
         self.log.debug("sensor_state_change :: state: " +  pprint.pformat(self.state))
-        if new.state == "unavailable":
-            self.unavailable_entities.add(entity)
+        if new and new.state == "unavailable":
             self.log.debug("Entity %s became unavailable.", entity)
+            self.unavailable_entities.add(entity)
             return
-
-        # Entity was unavailable and now is not
-        if entity in self.unavailable_entities and new.state != "unavailable":
-            self.unavailable_entities.remove(entity)
+        elif new and entity in self.unavailable_entities and new.state != "unavailable":
             self.log.debug("Entity %s recovered from unavailable.", entity)
-            # Decide how to handle this scenario. For example:
-            # - If you want to reset to a default state without treating as manual activation:
-            self.log.debug("Resetting state machine for %s to default state.", entity)
-            #self.transition_to_idle()
+            self.unavailable_entities.remove(entity)
             return
         try:
             if new.state == old.state:
