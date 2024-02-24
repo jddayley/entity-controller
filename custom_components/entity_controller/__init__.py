@@ -397,7 +397,7 @@ class EntityController(entity.Entity):
     )
 
     def __init__(self, hass, config, machine):
-        self.unavailable_entities = set()  # Track unavailable entities
+        
         self.attributes = {}
         self.may_update = False
         self.model = None
@@ -497,7 +497,7 @@ class Model:
 
     def __init__(self, hass, config, machine, entity):
         self.ec_startup_time = datetime.now()
-
+        self.unavailable_entities = set()  # Track unavailable entities
         self.hass = hass  # backwards reference to hass object
         self.entity = entity  # backwards reference to entity containing this model
 
