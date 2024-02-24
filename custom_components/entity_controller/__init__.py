@@ -667,7 +667,7 @@ class Model:
     @callback
     def state_entity_state_change(self, entity, old, new):
         """ State change callback for state entities. This can be called with either a state change or an attribute change. """
-        self.log.debug(
+        self.log.info(
             "state_entity_state_change :: [ Entity: %s, Context: %s ]\n\tOld state: %s\n\tNew State: %s",
             str(entity),
             str(new.context),
