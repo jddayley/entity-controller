@@ -595,7 +595,10 @@ class Model:
         """ State change callback for sensor entities """
         self.log.debug("sensor_state_change :: %10s Sensor state change to: %s" % ( pprint.pformat(entity), new.state))
         self.log.debug("sensor_state_change :: state: " +  pprint.pformat(self.state))
-
+        if new.state == "unavailable":
+            # Log for debugging purposes
+            self.log.debug("Entity %s became unavailable. Ignoring.", entity)
+            return  # Exit the function early, ignoring the unavailable state
         try:
             if new.state == old.state:
                 self.log.debug("sensor_state_change :: Ignore attribute only change")
