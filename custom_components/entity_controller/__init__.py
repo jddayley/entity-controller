@@ -594,8 +594,8 @@ class Model:
     @callback
     def sensor_state_change(self, entity, old, new):
         """ State change callback for sensor entities """
-        self.log.debug("sensor_state_change :: %10s Sensor state change to: %s" % ( pprint.pformat(entity), new.state))
-        self.log.debug("sensor_state_change :: state: " +  pprint.pformat(self.state))
+        self.log.info("sensor_state_change :: %10s Sensor state change to: %s" % ( pprint.pformat(entity), new.state))
+        self.log.info("sensor_state_change :: state: " +  pprint.pformat(self.state))
         if new and new.state == "unavailable":
             self.unavailable_entities.add(entity)
             self.log.info("Entity %s became unavailable.", entity)
